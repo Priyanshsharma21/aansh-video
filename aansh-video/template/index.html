@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>My Video</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      /* Optional: drop .ttf files in assets/fonts and add @font-face rules here, e.g.
+         @font-face { font-family: "Inter"; src: url("assets/fonts/Inter.ttf") format("truetype"); font-weight: 100 900; } */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; overflow: hidden; background: #000; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      #film { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    </style>
+  </head>
+  <body>
+    <!-- Set data-duration (both places) and DUR below to your audio length in seconds -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+      <canvas id="film" class="clip" data-start="0" data-duration="12" data-track-index="1" width="1920" height="1080"></canvas>
+      <!-- Add your voice track here: an audio element with src="assets/voice.mp3", data-start="0", data-duration (seconds), data-track-index="2" -->
+    </div>
+    <script src="assets/words.js"></script>
+    <script src="assets/mouth.js"></script>
+    <script src="assets/engine.js"></script>
+    <script src="assets/scenes.js"></script>
+    <script>
+      (function () {
+        const DUR = FILM.DUR;
+        document.fonts.ready.then(() => {
+          FILM.init();
+          const ctx = document.getElementById("film").getContext("2d");
+          const clock = { t: 0 };
+          const tl = gsap.timeline({ paused: true });
+          tl.to(clock, { t: DUR, duration: DUR, ease: "none", onUpdate: () => FILM.render(ctx, clock.t) }, 0);
+          FILM.render(ctx, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["main"] = tl;
+          if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+        });
+      })();
+    </script>
+  </body>
+</html>
